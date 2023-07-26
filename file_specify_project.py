@@ -1,5 +1,5 @@
-
 import os
+import sys
 import shutil
 
 # Dictionary containing file extensions categorized by type
@@ -31,8 +31,6 @@ dict_extension = {
     'Video_project_extension': ('.aep', '.prproj', '.veg')
 }
 
-folderpath = input("Enter folder path: ")
-
 def file_finder(folder_path, file_extension):
     # Function to find files with specific extensions in the given folder
     files = []
@@ -42,14 +40,18 @@ def file_finder(folder_path, file_extension):
                 files.append(file)
     return files
 
+# Get the folder path where the .exe file is located
+folderpath = os.path.dirname(sys.argv[0])
+
 # Loop through the dictionary and sort files into respective folders based on extensions
 for extension_type, extension_tuple in dict_extension.items():
     folder_name = extension_type.split('_')[0] + ' files'
     new_folder_path = os.path.join(folderpath, folder_name)
-    if not os.path.exists(new_folder_path):
-        os.mkdir(new_folder_path)  # Create the new folder if it doesn't exist
-    for item in file_finder(folderpath, extension_tuple):
-        item_path = os.path.join(folderpath, item)
-        item_new_path = os.path.join(new_folder_path, item)
-        shutil.move(item_path, item_new_path)  # Move the file to the respective folder
-        
+    files_to_move = file_finder(folderpath, extension_tuple)
+    if files_to_move:
+        if not os.path.exists(new_folder_path):
+            os.mkdir(new_folder_path)  # Create the new folder if it doesn't exist
+        for item in files_to_move:
+            item_path = os.path.join(folderpath, item)
+            item_new_path = os.path.join(new_folder_path, item)
+            shutil.move(item_path, item_new_path)  # Move the file to the respective folder
